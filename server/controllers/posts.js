@@ -17,8 +17,8 @@ export const getPosts = async (req, res) => {
         const startIndex = (Number(page) - 1) * LIMIT; // get the starting index of every page
 
         const total = await PostMessage.countDocuments({});
-        // sort({ _id: -1 }) is gona return the newest posts first
         const posts = await PostMessage.find().sort({ _id: -1 }).limit(LIMIT).skip(startIndex);
+        // sort({ _id: -1 }) is gona return the newest posts first
         // limit means limit qeder posts qaytar
         // skipde deyirki meselen 2ci seyfedesense ancaq 2nin postlarini goster daha 1den baslama
         res.json(
@@ -38,11 +38,13 @@ export const getPostsBySearch = async (req, res) => {
     const { searchQuery, tags } = req.query;
 
     try {
+        //bunu yazanda axtarisda "me" versek bele "merni" tapacaq
         const title = new RegExp(searchQuery, "i"); // registr sensitive
 
         const posts = await PostMessage.find(
-            { $or: [{ title }, { tags: { $in: tags.split(',') } }] }
+            { $or: [{ title: title }, { tags: { $in: tags.split(',') } }] }
         );
+
 
         res.json({ data: posts }); // data-nin burda yazilmasinin ne menasi var sonradan iki defe destructure edecik ic ice gic gic
     } catch (error) {
@@ -56,22 +58,20 @@ export const getPost = async (req, res) => {
 
     try {
         const post = await PostMessage.findById(id);
-        console.log(post);
         res.status(200).json(post);
 
     } catch (error) {
         console.log(error);
-        res.status(404).json({ message: error.message });
+        res.status(404).json(error.message);
     }
 }
-
-
 
 // CREATE POST
 export const createPost = async (req, res) => {
     try {
         const newPost = new PostMessage(
-            { ...req.body, creator: req.userId, createdAt: new Date().toISOString() }
+            { ...req.body, creator: req.userId }
+            //, createdAt: new Date().toISOString() sildim bunu
         )
 
         const savedPost = await newPost.save()
@@ -107,26 +107,25 @@ export const deletePost = async (req, res) => {
         res.status(200).json("post had been deleted successfully")
 
     } catch (err) {
-        res.status(404).json({ message: err.message })
+        res.status(404).json(err.message)
     }
 }
 
 // COMMENT POST
 export const commentPost = async (req, res) => {
-    const { id } = req.params;
-    const { value } = req.body;
-    // req.body.value => {value: 'Nargiz Hasanova: check'}
+    const postId = req.params.id;
+    const commentValue = req.body.value; 
+    // commentValue => 'Nargiz Hasanova: check'
 
     try {
-        const post = await PostMessage.findById(id);
-        post.comments.push(value);
+        const post = await PostMessage.findById(postId);
+        post.comments.push(commentValue);
 
-        const updatedPost = await PostMessage.findByIdAndUpdate(id, post, { new: true });
-
+        const updatedPost = await PostMessage.findByIdAndUpdate(postId, post, { new: true });
         res.json(updatedPost);
 
     } catch (err) {
-        res.status(404).json({ message: err.message })
+        res.status(404).json(err.message)
     }
 }
 
@@ -134,11 +133,10 @@ export const commentPost = async (req, res) => {
 export const likePost = async (req, res) => {
     try {
         if (!req.userId) return res.json({ message: "Unauthenticated" });
-        const post = await PostMessage.findById(req.params.id)
+        const post = await PostMessage.findById(req.params.postId) //req.params.id = postId
 
-        // likes is array of strings
-        const index = post.likes.findIndex((id) => id === String(req.userId));
-        if (index === -1) { // yeni postu bu id-de olan wexs like etmeyib
+        const isLiked = post.likes.find((id) => id === req.userId);
+        if (!isLiked) { // yeni postu bu id-de olan wexs like etmeyib
             // like the post
             post.likes.push(req.userId);
         } else {
@@ -146,7 +144,7 @@ export const likePost = async (req, res) => {
             post.likes = post.likes.filter((id) => id !== String(req.userId));
         }
 
-        const updatedPost = await PostMessage.findByIdAndUpdate(req.params.id, post, { new: true });
+        const updatedPost = await PostMessage.findByIdAndUpdate(req.params.postId, post, { new: true });
         res.status(200).json(updatedPost);
 
     } catch (err) {
@@ -154,3 +152,28 @@ export const likePost = async (req, res) => {
         res.status(404).json({ message: err })
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

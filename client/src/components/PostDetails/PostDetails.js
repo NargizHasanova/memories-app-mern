@@ -10,10 +10,15 @@ import useStyles from './styles';
 
 const Post = () => {
   const { post, posts, isLoading } = useSelector((state) => state.posts);
+
+
+
+  console.log(posts);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const classes = useStyles();
   const { id } = useParams();
+  // post useffect icinde ona gore yaziriqki ilk renderde postun deyeri helede teyin olmur(undefined olur). useffect bitennen sonra! artiq post teyin olunur ve post deyiwdi deye iwe duwmesini saglayan mes ele dependency-de yazdigimiz [post] olur.
 
   useEffect(() => {
     dispatch(getPost(id));
@@ -25,7 +30,6 @@ const Post = () => {
     }
   }, [post]);
 
-  if (!post) return null;
 
   const openPost = (_id) => navigate(`/posts/${_id}`);
 
@@ -37,13 +41,12 @@ const Post = () => {
     );
   }
 
-  const recommendedPosts = posts?.filter(({ _id }) => _id !== post._id);
-  console.log(Boolean(recommendedPosts.length));
+  const recommendedPosts = posts?.filter(({ _id }) => _id !== post._id); // useffecte bax evvel,orda sirf postun taglariyla eyni olan postlari axtarir ve burdada esas postdan basqa(ana ekrandaki) qalan hamisini recoomended postlara at
 
 
   return (
     <Paper style={{ padding: '20px', borderRadius: '15px' }} elevation={6}>
-      <div className={classes.card}>
+      {post && <div className={classes.card}>
         <div className={classes.section}>
           <Typography variant="h3" component="h2">{post.title}</Typography>
           <Typography gutterBottom variant="h6" color="textSecondary" component="h2">
@@ -70,14 +73,16 @@ const Post = () => {
         <div className={classes.imageSection}>
           <img className={classes.media} src={post.selectedFile || 'https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png'} alt={post.title} />
         </div>
-      </div>
-      {recommendedPosts.length > 0 && (
+      </div>}
+
+      {recommendedPosts?.length > 0 && (
         <div className={classes.section}>
           <Typography gutterBottom variant="h5">You might also like:</Typography>
           <Divider />
           <div className={classes.recommendedPosts}>
             {recommendedPosts.map(({ title, name, message, likes, selectedFile, _id }) => (
               <div
+                className={classes.recommendedPost}
                 style={{ margin: '20px', cursor: 'pointer' }}
                 onClick={() => openPost(_id)} key={_id}>
                 <Typography gutterBottom variant="h6">{title}</Typography>

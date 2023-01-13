@@ -31,12 +31,11 @@ const Post = ({ post, setCurrentId }) => {
   };
 
   const openPost = (e) => {
-    // dispatch(getPost(post._id, history));
     navigate(`/posts/${post._id}`);
   };
 
   const Likes = () => {
-    if (likes.length > 0) {
+    if (likes.length > 0) { // likes = post.likes
       return likes.find((like) => like === userId)
         ? (
           <>
@@ -55,7 +54,6 @@ const Post = ({ post, setCurrentId }) => {
     return <><ThumbUpAltOutlined fontSize="small" />&nbsp;Like</>;
   };
 
-
   return (
     <Card className={classes.card} raised elevation={6}>
       <ButtonBase
@@ -73,6 +71,7 @@ const Post = ({ post, setCurrentId }) => {
         </div>
         {user?.result?._id === post?.creator && (
           <div className={classes.overlay2} name="edit">
+            {/*================ DOOOOOOTS HERE ================================== */}
             <Button
               onClick={(e) => {
                 e.stopPropagation();
@@ -104,7 +103,7 @@ const Post = ({ post, setCurrentId }) => {
         <Button size="small" color="primary" disabled={!user?.result} onClick={handleLike}>
           <Likes />
         </Button>
-        {(user?.result?.googleId === post?.creator || user?.result?._id === post?.creator) && (
+        {user?.result?._id === post?.creator && (
           <Button size="small" color="secondary" onClick={() => dispatch(deletePost(post._id))}>
             <DeleteIcon fontSize="small" /> &nbsp; Delete
           </Button>

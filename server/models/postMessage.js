@@ -4,12 +4,12 @@ const { Schema } = mongoose
 const PostSchema = new Schema({
     title: String,
     message: String,
-    name: String,
-    creator: String, //user-creator's id
+    name: String,// userin adi,onuda frontda elagelendirecik
+    creator: String, //user-creator's id HARDAN GELDIYINI ARASDIR
     tags: [String],
     selectedFile: String,
     likes: {
-        type: [String],
+        type: [String],// array of user id's
         default: []
     },
     comments: {
@@ -18,7 +18,7 @@ const PostSchema = new Schema({
     },
     createdAt: {
         type: Date,
-        default: new Date(),
+        default: new Date().toISOString(),
     },
 })
 

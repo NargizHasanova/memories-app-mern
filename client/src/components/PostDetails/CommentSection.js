@@ -1,10 +1,9 @@
 import React, { useState, useRef } from 'react';
 import { Typography, TextField, Button } from '@material-ui/core/';
 import { useDispatch } from 'react-redux';
-
 import { commentPost } from '../../actions/posts';
 import useStyles from './styles';
-import Axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const CommentSection = ({ post }) => {
     const user = JSON.parse(localStorage.getItem('profile'));
@@ -12,14 +11,20 @@ const CommentSection = ({ post }) => {
     const dispatch = useDispatch();
     const [comments, setComments] = useState(post?.comments);
     const classes = useStyles();
+    const navigate = useNavigate()
     const commentsRef = useRef();
 
     const handleComment = async () => {
+        if (!user) navigate("/login")
         const newComments = await dispatch(commentPost(`${user?.result?.name}: ${comment}`, post._id));
-        console.log(`${user?.result?.name}: ${comment}`);
+        console.log(newComments); //['Nargiz Hasanova: sdfgsdfg liii', 'qulu najafov: sil']
+        // dispatch(commentPost("string",postId))
+        // "Nargiz Hasanova: salam", postId
+        
         setComment('');
         setComments(newComments); // yeni commentleri srazu gosterir reloadsiz
-        commentsRef.current.scrollIntoView({ behavior: 'smooth' }); // komment coxlugu olanda scroll yaranir ve yeni comment elave edilende scroll avtomatik en sonuncu komente scroll elesin deye bunu yaziriq
+        commentsRef.current.scrollIntoView({ behavior: 'smooth' });
+        // komment coxlugu olanda scroll yaranir ve yeni comment elave edilende scroll avtomatik en sonuncu komente scroll elesin deye bunu yaziriq
     };
 
     return (
@@ -29,18 +34,31 @@ const CommentSection = ({ post }) => {
                     <Typography gutterBottom variant="h6">Comments</Typography>
                     {comments?.map((c, i) => (
                         <Typography key={i} gutterBottom variant="subtitle1">
-                            <strong>{c.split(': ')[0]}</strong>
-                            {c.split(':')[1]}
+                            <strong>{c?.split(': ')[0]}</strong>
+                            {c?.split(':')[1]}
                         </Typography>
                     ))}
-                    <div ref={commentsRef} />  
+                    <div ref={commentsRef} />
                     {/* sonda yaziriqki en sonuncuya scroll etsin */}
                 </div>
                 <div style={{ width: '70%' }}>
                     <Typography gutterBottom variant="h6">Write a comment</Typography>
-                    <TextField fullWidth minRows={4} variant="outlined" label="Comment" multiline value={comment} onChange={(e) => setComment(e.target.value)} />
+                    <TextField
+                        fullWidth
+                        minRows={4}
+                        variant="outlined"
+                        label="Comment"
+                        multiline
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)} />
                     <br />
-                    <Button style={{ marginTop: '10px' }} fullWidth disabled={!comment.length} color="primary" variant="contained" onClick={handleComment}>
+                    <Button
+                        style={{ marginTop: '10px' }}
+                        fullWidth
+                        disabled={!comment.length}
+                        color="primary"
+                        variant="contained"
+                        onClick={handleComment}>
                         Comment
                     </Button>
                 </div>

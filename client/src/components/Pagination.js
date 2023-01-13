@@ -15,18 +15,18 @@ const Paginate = ({ page }) => {
     const classes = useStyles();
 
     useEffect(() => {
-        if (page) {
-            dispatch(getPosts(page));
-        }
+        dispatch(getPosts(page));
     }, [dispatch, page]);
+    // console.log(posts.numberOfPages);
+    // console.log(posts.currentPage);
 
     return (
         <>
-            {posts.posts.length > 0 && (
+            {posts?.numberOfPages > 1 && ( // bu useeffectden evvel ise dusur deye undefined qaytarir ilk ve <></> bele qalir sonra uje ici dolur.Ama biz sadece sonu goruruk.Console-da bunu aciq aydin gormek olar 
                 <Pagination
                     classes={{ ul: classes.ul }}
                     count={posts.numberOfPages}
-                    page={posts.currentPage}
+                    page={posts.currentPage} // hemen page numberi krujoka alir sadece
                     variant="outlined"
                     color="primary"
                     renderItem={(item) => (

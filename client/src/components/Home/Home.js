@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Container, Grow, Grid, AppBar, TextField, Button, Paper } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
-import { getPosts, getPostsBySearch } from '../../actions/posts';
+import { getPostsBySearch } from '../../actions/posts';
 import Posts from '../Posts/Posts';
 import Form from '../Form/Form';
 import Pagination from '../Pagination';
@@ -9,25 +9,22 @@ import useStyles from './styles';
 import { useNavigate, useLocation } from 'react-router-dom';
 import ChipInput from 'material-ui-chip-input';
 
-function useQuery() {
-    return new URLSearchParams(useLocation().search);
-}
-
 
 export default function Home() {
     const [currentId, setCurrentId] = useState(0);
     const dispatch = useDispatch();
     const classes = useStyles();
-    const query = useQuery();
+    const query =  new URLSearchParams(useLocation().search)
+    // console.log(useLocation())//{pathname: '/posts', search: '?page=2', hash: '', state: null, key: 'z1ornz3g'}
     const page = query.get('page') || 1;
-    const searchQuery = query.get('searchQuery');
+    // const searchQuery = query.get('searchQuery');
 
     const [search, setSearch] = useState('');
     const [tags, setTags] = useState([]);
     const navigate = useNavigate();
 
     const searchPost = () => {
-        if (search.trim() || tags) {
+        if (search.trim() || tags.length) {
             dispatch(getPostsBySearch({ search, tags: tags.join(',') }));
             navigate(`/posts/search?searchQuery=${search || 'none'}&tags=${tags.join(',')}`);
         } else {
@@ -41,12 +38,10 @@ export default function Home() {
             e.preventDefault();
             searchPost()
         }
-        console.log('handleKeyDown');
-
     };
 
     const handleAddChip = (tag) => {
-        return setTags([...tags, tag])
+        return setTags([...tags, tag])//["js","mern"]
     }
 
     const handleDeleteChip = (tag) => {
@@ -73,11 +68,12 @@ export default function Home() {
                                 variant="outlined"
                                 label="Search Memories"
                                 fullWidth value={search}
-                                onChange={(e) => setSearch(e.target.value)} />
+                                onChange={(e) => setSearch(e.target.value)} 
+                                />
                             <ChipInput
                                 style={{ margin: '10px 0' }}
                                 value={tags}
-                                onAdd={(chip) => handleAddChip(chip)}
+                                onAdd={(chip) => handleAddChip(chip)}// chip = tag
                                 onDelete={(chip) => handleDeleteChip(chip)}
                                 label="Search Tags"
                                 variant="outlined"

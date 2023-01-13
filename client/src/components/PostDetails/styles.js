@@ -22,17 +22,31 @@ export default makeStyles((theme) => ({
         flex: 1,
     },
     imageSection: {
+        width: '45%',
         marginLeft: '20px',
         [theme.breakpoints.down('sm')]: {
             marginLeft: 0,
         },
     },
     recommendedPosts: {
+        marginTop: "7px",
+        overflowY: "scroll",
         display: 'flex',
         [theme.breakpoints.down('sm')]: {
             flexDirection: 'column',
         },
     },
+    recommendedPost: {
+        padding:"10px",
+        '&:hover': {
+            boxShadow: 'rgba(0, 0, 0, 0.24) 0px 3px 8px',
+            transition: 'all 0.2s'
+        },
+        width: "23%",
+        border: '1px solid #eee',
+        borderRadius:"7px"
+    },
+
     loadingPaper: {
         display: 'flex',
         justifyContent: 'center',

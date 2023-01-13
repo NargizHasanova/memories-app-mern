@@ -17,7 +17,6 @@ export const getPosts = (page) => async (dispatch) => {
     try {
         dispatch({ type: START_LOADING });
         const { data: { data, currentPage, numberOfPages } } = await api.fetchPosts(page);
-        console.log(data);
         dispatch({ type: FETCH_ALL, payload: { data, currentPage, numberOfPages } });
         dispatch({ type: END_LOADING });
     } catch (error) {
@@ -72,11 +71,11 @@ export const updatePost = (id, post) => async (dispatch) => {
     }
 };
 
-export const likePost = (id) => async (dispatch) => {
+export const likePost = (postId) => async (dispatch) => {
     const user = JSON.parse(localStorage.getItem('profile'));
 
     try {
-        const { data } = await api.likePost(id, user?.token);
+        const { data } = await api.likePost(postId, user?.token);
 
         dispatch({ type: LIKE, payload: data });
     } catch (error) {

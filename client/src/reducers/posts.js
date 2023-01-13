@@ -22,9 +22,15 @@ export default (state =
         case FETCH_BY_CREATOR:
             return { ...state, posts: action.payload.data };
         case FETCH_POST:
-            return { ...state, post: action.payload.data };
+            return { ...state, post: action.payload.data }; // post (SINGLE)
         case LIKE:
-            return { ...state, posts: state.posts.map((post) => (post._id === action.payload._id ? action.payload : post)) };
+            return {
+                ...state,
+                posts: state.posts.map((item) => (
+                    //action.payload = updatedPost
+                    item._id === action.payload._id ? action.payload : item
+                ))
+            };
         case COMMENT:
             return {
                 ...state,

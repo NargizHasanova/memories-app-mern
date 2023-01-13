@@ -30,7 +30,7 @@ export const signin = async (req, res) => {
             },
             secret,
             {
-                expiresIn: '1d',
+                expiresIn: '30d',
             },
         );
 
@@ -54,7 +54,7 @@ export const signup = async (req, res) => {
 
         const createdUser = await UserModal.create({
             name: `${firstName} ${lastName}`,
-            email,
+            email: email,
             password: hashedPassowrd
         });
 
@@ -64,10 +64,10 @@ export const signup = async (req, res) => {
                 id: createdUser._id,
             },
             secret,
-            { expiresIn: '1d' },
+            { expiresIn: '30d' },
         );
 
-        res.status(201).json({ result: createdUser, token })
+        res.status(201).json({ result: createdUser, token }) // bunuda front localstorage-da stringify edir
     } catch (err) {
         console.log(err);
         res.status(500).json({
@@ -75,4 +75,7 @@ export const signup = async (req, res) => {
         });
     }
 }
+
+
+
 
