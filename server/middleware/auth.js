@@ -21,41 +21,4 @@ const auth = (req, res, next) => { //authda biz requestden gelen hecneyi istifad
 
 
 
-
-
-
-
-
-
-const authH = (req, res, next) => {
-    try {
-        // yoxlamaliyiqki bu userin(id) ixtiyari varmi edit isleri aparmaga
-        const token = req.headers.authorization.split(" ")[1]
-        if (token ){
-            const user = jwt.verify(token,'secret123')
-            req.userId = user.id
-        }
-        next()
-    } catch (err) {
-        console.log(err);
-        res.status(401).json(err)
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 export default auth

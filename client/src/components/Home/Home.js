@@ -8,25 +8,31 @@ import Pagination from '../Pagination';
 import useStyles from './styles';
 import { useNavigate, useLocation } from 'react-router-dom';
 import ChipInput from 'material-ui-chip-input';
+import { useEffect } from 'react';
+import { getPosts } from '../../redux/postsSlice';
 
 
 export default function Home() {
-    const [currentId, setCurrentId] = useState(0);
+    // const [currentId, setCurrentId] = useState(0);
     const dispatch = useDispatch();
     const classes = useStyles();
     const query =  new URLSearchParams(useLocation().search)
     // console.log(useLocation())//{pathname: '/posts', search: '?page=2', hash: '', state: null, key: 'z1ornz3g'}
     const page = query.get('page') || 1;
-    // const searchQuery = query.get('searchQuery');
 
     const [search, setSearch] = useState('');
     const [tags, setTags] = useState([]);
     const navigate = useNavigate();
 
+    useEffect(() => {
+        dispatch(getPosts(page));
+    }, [dispatch, page]);
+    
+
     const searchPost = () => {
         if (search.trim() || tags.length) {
-            dispatch(getPostsBySearch({ search, tags: tags.join(',') }));
-            navigate(`/posts/search?searchQuery=${search || 'none'}&tags=${tags.join(',')}`);
+            dispatch(getPostsBySearch({ search, tags: tags }));
+            navigate(`/posts/search?searchQuery=${search || 'none'}&tags=${tags}`);
         } else {
             navigate('/');
         }
@@ -58,7 +64,7 @@ export default function Home() {
                     alignItems="stretch"
                     spacing={3}>
                     <Grid item xs={12} sm={6} md={9}>
-                        <Posts setCurrentId={setCurrentId} />
+                        <Posts />
                     </Grid>
                     <Grid item xs={12} sm={6} md={3}>
                         <AppBar className={classes.appBarSearch} position="static" color="inherit">
@@ -85,7 +91,7 @@ export default function Home() {
                                 color="primary">Search
                             </Button>
                         </AppBar>
-                        <Form currentId={currentId} setCurrentId={setCurrentId} />
+                        <Form />
                         <Paper className={classes.pagination} elevation={6}>
                             <Pagination page={page} />
                         </Paper>

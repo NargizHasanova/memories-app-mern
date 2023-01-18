@@ -6,6 +6,7 @@ const secret = 'test';
 
 export const signin = async (req, res) => {
     const { email, password } = req.body
+    console.log(email);
     try {
         const existingUser = await UserModal.findOne({ email });
 
@@ -16,7 +17,7 @@ export const signin = async (req, res) => {
         }
 
         const isValidPass = await bcrypt.compare(password, existingUser.password);
-
+        console.log(isValidPass);
         if (!isValidPass) {
             return res.status(400).json({
                 message: 'wrong password',
@@ -34,7 +35,8 @@ export const signin = async (req, res) => {
             },
         );
 
-        res.status(200).json({ result: existingUser, token });
+
+        res.status(200).json({ ...existingUser._doc, token });
     } catch (err) {
         console.log(err);
         return res.status(500).json(err.message);
@@ -67,7 +69,7 @@ export const signup = async (req, res) => {
             { expiresIn: '30d' },
         );
 
-        res.status(201).json({ result: createdUser, token }) // bunuda front localstorage-da stringify edir
+        res.status(201).json({ ...createdUser._doc, token }) // bunuda front localstorage-da stringify edir
     } catch (err) {
         console.log(err);
         res.status(500).json({

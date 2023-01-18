@@ -23,7 +23,7 @@ export const getPosts = async (req, res) => {
         // skipde deyirki meselen 2ci seyfedesense ancaq 2nin postlarini goster daha 1den baslama
         res.json(
             {
-                data: posts,
+                posts: posts,
                 currentPage: Number(page),
                 numberOfPages: Math.ceil(total / LIMIT)
             }
@@ -43,10 +43,10 @@ export const getPostsBySearch = async (req, res) => {
 
         const posts = await PostMessage.find(
             { $or: [{ title: title }, { tags: { $in: tags.split(',') } }] }
-        );
+        );// hansi yazilan tagi include edirse butun o postlari qaytaracaq(amcaq birinci tapdigini yox)
 
 
-        res.json({ data: posts }); // data-nin burda yazilmasinin ne menasi var sonradan iki defe destructure edecik ic ice gic gic
+        res.json(posts); // data-nin burda yazilmasinin ne menasi var sonradan iki defe destructure edecik ic ice gic gic
     } catch (error) {
         res.status(404).json({ message: error.message });
     }
@@ -84,7 +84,6 @@ export const createPost = async (req, res) => {
 
 // UPDATE POST
 export const updatePost = async (req, res) => {
-
     try {
         const updatedPost = await PostMessage.findByIdAndUpdate(req.params.id,
             { $set: req.body },
@@ -94,7 +93,7 @@ export const updatePost = async (req, res) => {
         res.status(200).json(updatedPost)
 
     } catch (err) {
-        res.status(404).json({ message: err.message })
+        res.status(404).json(err.message)
     }
 }
 
@@ -104,7 +103,7 @@ export const deletePost = async (req, res) => {
     try {
         await PostMessage.findByIdAndDelete(req.params.id)
 
-        res.status(200).json("post had been deleted successfully")
+        res.status(200).json(req.params.id)
 
     } catch (err) {
         res.status(404).json(err.message)
@@ -114,7 +113,7 @@ export const deletePost = async (req, res) => {
 // COMMENT POST
 export const commentPost = async (req, res) => {
     const postId = req.params.id;
-    const commentValue = req.body.value; 
+    const commentValue = req.body.value;
     // commentValue => 'Nargiz Hasanova: check'
 
     try {
@@ -134,7 +133,6 @@ export const likePost = async (req, res) => {
     try {
         if (!req.userId) return res.json({ message: "Unauthenticated" });
         const post = await PostMessage.findById(req.params.postId) //req.params.id = postId
-
         const isLiked = post.likes.find((id) => id === req.userId);
         if (!isLiked) { // yeni postu bu id-de olan wexs like etmeyib
             // like the post
@@ -145,6 +143,7 @@ export const likePost = async (req, res) => {
         }
 
         const updatedPost = await PostMessage.findByIdAndUpdate(req.params.postId, post, { new: true });
+        console.log(updatedPost);
         res.status(200).json(updatedPost);
 
     } catch (err) {

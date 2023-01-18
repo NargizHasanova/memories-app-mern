@@ -22,4 +22,9 @@ export default makeStyles((theme) => ({
     buttonSubmit: {
         marginBottom: 10,
     },
+    textareaMessage: {
+        maxHeight: "200px" ,
+        overflowX: 'hidden',
+        overflowY: 'scroll',
+    }
 }));

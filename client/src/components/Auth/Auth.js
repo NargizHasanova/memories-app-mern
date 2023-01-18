@@ -5,10 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { GoogleOAuthProvider } from '@react-oauth/google';
-import { signin, signup } from '../../actions/auth';
-import { AUTH } from '../../constants/actionTypes';
 import useStyles from './styles';
 import Input from './Input';
+import { signIn, signUp } from '../../redux/usersSlice';
 
 const initialState = { firstName: '', lastName: '', email: '', password: '', confirmPassword: '' };
 
@@ -32,14 +31,13 @@ const Auth = () => {
     e.preventDefault();
 
     if (isSignup) {
-      dispatch(signup(form, navigate));
+      dispatch(signUp({ form, navigate }));
     } else {
-      dispatch(signin(form, navigate));
+      dispatch(signIn({ form, navigate }));
     }
   };
 
   const googleSuccess = async (res) => console.log('google success')
-
 
   const googleError = (err) => console.log(err);
 
@@ -52,6 +50,7 @@ const Auth = () => {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">{isSignup ? 'Sign up' : 'Sign in'}</Typography>
+        {/*================ FORM ===================================================*/}
         <form className={classes.form} onSubmit={handleSubmit}>
           <Grid container spacing={2}>
             {isSignup && (

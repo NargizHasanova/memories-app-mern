@@ -11,12 +11,9 @@ const Paginate = ({ page }) => {
     //state.posts = {isLoading: true, posts: Array(8), currentPage: 1, numberOfPages: 2}
     const posts = useSelector((state) => state.posts);
     const dispatch = useDispatch();
-
     const classes = useStyles();
 
-    useEffect(() => {
-        dispatch(getPosts(page));
-    }, [dispatch, page]);
+    
     // console.log(posts.numberOfPages);
     // console.log(posts.currentPage);
 

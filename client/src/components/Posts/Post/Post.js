@@ -4,21 +4,26 @@ import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import DeleteIcon from '@material-ui/icons/Delete';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import ThumbUpAltOutlined from '@material-ui/icons/ThumbUpAltOutlined';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
-import { likePost, deletePost } from '../../../actions/posts';
 import useStyles from './styles';
+import { deletePost, getPost, likePost } from '../../../redux/postsSlice';
 
-const Post = ({ post, setCurrentId }) => {
-  const user = JSON.parse(localStorage.getItem('profile'));
+const Post = ({ post }) => {
+  // demeli herdefe useselectorla stateden nese goturende gec gelir cavab.Ona gore hamisi error verir cunki lap sonda gelir dispatchden cavab.Ona gorede post- deyerini ele propsla otururem
+  // const { post } = useSelector((state) => state.posts);
+  // const adam = JSON.parse(localStorage.getItem('profile'));
+  const { user } = useSelector((state) => state.users);
+  const { posts } = useSelector((state) => state.posts);
   const [likes, setLikes] = useState(post?.likes);
+  // demek reduxdaki state-i biz yeniden useState-e saliriq ki suretli gorsensin ekranda deyisikler
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const classes = useStyles();
 
-  const userId = user?.result?._id;
-  const hasLikedPost = post.likes.find((likesId) => likesId === userId);
+  const userId = user?._id;
+  const hasLikedPost = post?.likes.find((likesId) => likesId === userId);
 
   const handleLike = async () => {
     dispatch(likePost(post._id));
@@ -30,7 +35,8 @@ const Post = ({ post, setCurrentId }) => {
     }
   };
 
-  const openPost = (e) => {
+  const openPost = () => {
+    dispatch(getPost(post._id))
     navigate(`/posts/${post._id}`);
   };
 
@@ -63,19 +69,21 @@ const Post = ({ post, setCurrentId }) => {
         onClick={openPost}
       >
         <CardMedia
-          className={classes.media} image={post.selectedFile || 'https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png'}
+          className={classes.media}
+          image={post.selectedFile || 'https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png'}
           title={post.title} />
         <div className={classes.overlay}>
           <Typography variant="h6">{post.name}</Typography>
           <Typography variant="body2">{moment(post.createdAt).fromNow()}</Typography>
         </div>
-        {user?.result?._id === post?.creator && (
+        {user?._id === post?.creator && (
           <div className={classes.overlay2} name="edit">
             {/*================ DOOOOOOTS HERE ================================== */}
             <Button
               onClick={(e) => {
-                e.stopPropagation();
-                setCurrentId(post._id);
+                e.stopPropagation(); // openPost acilmasin deye
+                dispatch(getPost(post._id))
+                // setCurrentId(post._id);
               }}
               style={{ color: 'white' }}
               size="small"
@@ -100,10 +108,10 @@ const Post = ({ post, setCurrentId }) => {
         </CardContent>
       </ButtonBase>
       <CardActions className={classes.cardActions}>
-        <Button size="small" color="primary" disabled={!user?.result} onClick={handleLike}>
+        <Button size="small" color="primary" disabled={!user} onClick={handleLike}>
           <Likes />
         </Button>
-        {user?.result?._id === post?.creator && (
+        {user?._id === post?.creator && (
           <Button size="small" color="secondary" onClick={() => dispatch(deletePost(post._id))}>
             <DeleteIcon fontSize="small" /> &nbsp; Delete
           </Button>

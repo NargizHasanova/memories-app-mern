@@ -5,10 +5,10 @@ import FileBase from 'react-file-base64';
 import { useNavigate } from 'react-router-dom';
 import ChipInput from 'material-ui-chip-input';
 
-import { createPost, updatePost } from '../../actions/posts';
 import useStyles from './styles';
+import { createPost, updatePost } from '../../redux/postsSlice';
 
-const Form = ({ currentId, setCurrentId }) => {
+const Form = () => {
   const [postData, setPostData] = useState(
     {
       title: '',
@@ -17,17 +17,18 @@ const Form = ({ currentId, setCurrentId }) => {
       selectedFile: ''
     }
   );
-  const post = useSelector((state) => (currentId
-    ? state.posts.posts.find((message) => message._id === currentId)
-    : null
-  )); // currentId = klik elediyim postun id-si
+  // const post = useSelector((state) => (currentId
+  //   ? state.posts.posts.find((message) => message._id === currentId)
+  //   : null
+  // )); // currentId = klik elediyim postun id-si
   const dispatch = useDispatch();
   const classes = useStyles();
-  const user = JSON.parse(localStorage.getItem('profile'));
+  const { user } = useSelector(state => state.users)
+  const { post } = useSelector(state => state.posts)
   const navigate = useNavigate();
 
   const clear = () => {
-    setCurrentId(0);
+    // setCurrentId(0);
     setPostData({ title: '', message: '', tags: [], selectedFile: '' });
   };
 
@@ -43,13 +44,12 @@ const Form = ({ currentId, setCurrentId }) => {
     if (!user) {
       return navigate("/auth")
     }
-
-    if (currentId === 0) {
-      dispatch(createPost({ ...postData, name: user?.result?.name }, navigate));
+    if (!post) { // yeni hec bir posta basmamisam,bassam editlenmelidi uje
+      dispatch(createPost({ ...postData, name: user?.name }));
       clear();
       window.location.reload()
     } else {
-      dispatch(updatePost(currentId, { ...postData, name: user?.result?.name }));
+      dispatch(updatePost({ ...postData, name: user?.name }));
       clear();
     }
   };
@@ -70,7 +70,7 @@ const Form = ({ currentId, setCurrentId }) => {
         className={`${classes.root} ${classes.form}`}
         onSubmit={handleSubmit}>
         <Typography variant="h6">
-          {currentId ? `Editing "${post?.title}"` : 'Creating a Memory'}
+          {post ? `Editing "${post?.title}"` : 'Creating a Memory'}
         </Typography>
         <TextField
           name="title"
@@ -79,13 +79,14 @@ const Form = ({ currentId, setCurrentId }) => {
           fullWidth
           value={postData.title}
           onChange={(e) => setPostData({ ...postData, title: e.target.value })} />
-        <TextField
+        <TextField // 12 ayliq 2min
           name="message"
           variant="outlined"
           label="Message"
           fullWidth
           multiline
           minRows={4}
+          className={classes.textareaMessage}
           value={postData.message}
           onChange={(e) => setPostData({ ...postData, message: e.target.value })} />
         <div style={{ padding: '5px 0', width: '94%' }}>
