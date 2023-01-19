@@ -17,10 +17,7 @@ const Form = () => {
       selectedFile: ''
     }
   );
-  // const post = useSelector((state) => (currentId
-  //   ? state.posts.posts.find((message) => message._id === currentId)
-  //   : null
-  // )); // currentId = klik elediyim postun id-si
+
   const dispatch = useDispatch();
   const classes = useStyles();
   const { user } = useSelector(state => state.users)
@@ -28,12 +25,10 @@ const Form = () => {
   const navigate = useNavigate();
 
   const clear = () => {
-    // setCurrentId(0);
     setPostData({ title: '', message: '', tags: [], selectedFile: '' });
   };
 
   useEffect(() => {
-    // if (!post?.title) clear();
     if (post) setPostData(post);
   }, [post]); // reduxu ele duzeltki bu poxu burdan silek
 

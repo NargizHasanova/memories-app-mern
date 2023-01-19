@@ -18,7 +18,6 @@ const Navbar = () => {
     const logOut = () => {
         dispatch(logout());
     };
-    console.log(user);
 
     useEffect(() => {
         const token = user?.token;

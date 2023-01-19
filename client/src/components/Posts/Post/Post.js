@@ -15,7 +15,6 @@ const Post = ({ post }) => {
   // const { post } = useSelector((state) => state.posts);
   // const adam = JSON.parse(localStorage.getItem('profile'));
   const { user } = useSelector((state) => state.users);
-  const { posts } = useSelector((state) => state.posts);
   const [likes, setLikes] = useState(post?.likes);
   // demek reduxdaki state-i biz yeniden useState-e saliriq ki suretli gorsensin ekranda deyisikler
   const dispatch = useDispatch();

@@ -83,6 +83,8 @@ export const likePost = (postId) => async (dispatch) => {
 };
 
 export const commentPost = (value, id) => async (dispatch) => {
+    // value = 'Nargiz Hasanova: sdfgsdfg liii'
+    // id = postId
     try {
         const { data } = await api.comment(value, id); //commentle update olmus post qaytarir 
 

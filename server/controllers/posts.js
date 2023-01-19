@@ -122,7 +122,6 @@ export const commentPost = async (req, res) => {
 
         const updatedPost = await PostMessage.findByIdAndUpdate(postId, post, { new: true });
         res.json(updatedPost);
-
     } catch (err) {
         res.status(404).json(err.message)
     }

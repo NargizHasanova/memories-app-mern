@@ -49,8 +49,19 @@ export const deletePost = createAsyncThunk("post/deletePost",
 
 export const likePost = createAsyncThunk("post/likePost",
     async (postId) => {
-        const res = await Axios.patch(`/posts/${postId}/likePost`)
-        return res.data
+        const { data } = await Axios.patch(`/posts/${postId}/likePost`)
+        return data
+    }
+)
+
+export const commentPost = createAsyncThunk("post/commentPost",
+    async ({ value, postId }) => {
+        // {
+        //   postId: _id,
+        //   value: "nargiz gasanova: my comment"
+        // }
+        const { data } = await Axios.post(`/posts/${postId}/commentPost`, { value: value })
+        return data
     }
 )
 
@@ -60,7 +71,8 @@ const initialState = {
     posts: [],
     post: null,
     currentPage: 1,
-    numberOfPages: undefined
+    numberOfPages: undefined,
+    postComments: []
 }
 
 export const postsSlice = createSlice({
@@ -126,7 +138,6 @@ export const postsSlice = createSlice({
             state.isLoading = false
         },
         [getPost.fulfilled]: (state, { payload }) => {
-            console.log('getPost fulfilled');
             state.post = payload
         },
         [getPostsBySearch.fulfilled]: (state, { payload }) => {
@@ -157,6 +168,12 @@ export const postsSlice = createSlice({
             state.posts = state.posts.map((post) => (
                 post._id === payload._id ? payload : post
             ))
+        },
+        [commentPost.fulfilled]: (state, { payload }) => {
+            // state.posts = state.posts.map((post) => (
+            //     post._id === payload._id ? payload : post
+            // ))
+            state.post = payload
         },
     }
 })

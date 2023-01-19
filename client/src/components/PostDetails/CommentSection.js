@@ -1,28 +1,31 @@
 import React, { useState, useRef } from 'react';
 import { Typography, TextField, Button } from '@material-ui/core/';
 import { useDispatch } from 'react-redux';
-import { commentPost } from '../../actions/posts';
 import useStyles from './styles';
 import { useNavigate } from 'react-router-dom';
+import { commentPost } from '../../redux/postsSlice';
+import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
 
-const CommentSection = ({ post }) => {
-    const user = JSON.parse(localStorage.getItem('profile'));
-    const [comment, setComment] = useState('');
+const CommentSection = ({ post }) => { // state.post-dan gelir
+    const { user } = useSelector(state => state.users)
     const dispatch = useDispatch();
-    const [comments, setComments] = useState(post?.comments);
+    const [comment, setComment] = useState('');
     const classes = useStyles();
     const navigate = useNavigate()
     const commentsRef = useRef();
+    // console.log(comments);//['ziya mammad: post2']
 
     const handleComment = async () => {
         if (!user) navigate("/login")
-        const newComments = await dispatch(commentPost(`${user?.result?.name}: ${comment}`, post._id));
-        console.log(newComments); //['Nargiz Hasanova: sdfgsdfg liii', 'qulu najafov: sil']
-        // dispatch(commentPost("string",postId))
-        // "Nargiz Hasanova: salam", postId
-        
+        await dispatch(commentPost(
+            {
+                value: `${user?.name}: ${comment}`,
+                postId: post._id
+            }
+        ));
+
         setComment('');
-        setComments(newComments); // yeni commentleri srazu gosterir reloadsiz
         commentsRef.current.scrollIntoView({ behavior: 'smooth' });
         // komment coxlugu olanda scroll yaranir ve yeni comment elave edilende scroll avtomatik en sonuncu komente scroll elesin deye bunu yaziriq
     };
@@ -32,7 +35,7 @@ const CommentSection = ({ post }) => {
             <div className={classes.commentsOuterContainer}>
                 <div className={classes.commentsInnerContainer}>
                     <Typography gutterBottom variant="h6">Comments</Typography>
-                    {comments?.map((c, i) => (
+                    {post?.comments?.map((c, i) => (
                         <Typography key={i} gutterBottom variant="subtitle1">
                             <strong>{c?.split(': ')[0]}</strong>
                             {c?.split(':')[1]}
@@ -59,7 +62,7 @@ const CommentSection = ({ post }) => {
                         color="primary"
                         variant="contained"
                         onClick={handleComment}>
-                        Comment
+                        Send
                     </Button>
                 </div>
             </div>

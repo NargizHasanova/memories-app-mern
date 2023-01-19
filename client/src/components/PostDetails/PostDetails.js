@@ -17,16 +17,13 @@ const Post = () => {
   // post useffect icinde ona gore yaziriqki ilk renderde postun deyeri helede teyin olmur(undefined olur). useffect bitennen sonra! artiq post teyin olunur ve post deyiwdi deye iwe duwmesini saglayan mes ele dependency-de yazdigimiz [post] olur.
 
 
-  useEffect(() => {
-    console.log('postdetails');
-
+  useEffect(() => { // bunu recommended postlara basanda seyfe o postu gostersin deye yazdiq
     dispatch(getPost(postId));
   }, [postId]);
 
   const openPost = (_id) => navigate(`/posts/${_id}`);
 
   const recommendedPosts = post ? posts?.filter(({ _id }) => _id !== post._id) : [] // useffecte bax evvel,orda sirf postun taglariyla eyni olan postlari axtarir ve burdada esas postdan basqa(ana ekrandaki) qalan hamisini recoomended postlara at
-  console.log(post);
 
   return (
     <Paper style={{ padding: '20px', borderRadius: '15px' }} elevation={6}>
@@ -36,7 +33,9 @@ const Post = () => {
             <Typography variant="h3" component="h2">{post.title}</Typography>
             <Typography gutterBottom variant="h6" color="textSecondary" component="h2">
               {post.tags.map((tag, index) => (
-                <Link to={`/tags/${tag}`} key={index} style={{ textDecoration: 'none', color: '#3f51b5' }}>
+                <Link to={`/tags/${tag}`}
+                  key={index}
+                  style={{ textDecoration: 'none', color: '#3f51b5' }}>
                   {` #${tag} `}
                 </Link>
               ))}
@@ -44,7 +43,8 @@ const Post = () => {
             <Typography gutterBottom variant="body1" component="p">{post.message}</Typography>
             <Typography variant="h6">
               Created by:
-              <Link to={`/creators/${post.name}`} style={{ textDecoration: 'none', color: '#3f51b5' }}>
+              <Link to={`/creators/${post.name}`}
+                style={{ textDecoration: 'none', color: '#3f51b5' }}>
                 {` ${post.name}`}
               </Link>
             </Typography>
@@ -52,11 +52,15 @@ const Post = () => {
             <Divider style={{ margin: '20px 0' }} />
             <Typography variant="body1"><strong>Realtime Chat - coming soon!</strong></Typography>
             <Divider style={{ margin: '20px 0' }} />
+            {/* comment section */}
             <CommentSection post={post} />
             <Divider style={{ margin: '20px 0' }} />
           </div>
           <div className={classes.imageSection}>
-            <img className={classes.media} src={post.selectedFile || 'https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png'} alt={post.title} />
+            <img
+              className={classes.media}
+              src={post.selectedFile || 'https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png'}
+              alt={post.title} />
           </div>
         </div>
         : <Paper elevation={6} className={classes.loadingPaper}>
