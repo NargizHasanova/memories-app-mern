@@ -23,8 +23,12 @@ const Post = () => {
 
   const openPost = (_id) => navigate(`/posts/${_id}`);
 
-  const recommendedPosts = post ? posts?.filter(({ _id }) => _id !== post._id) : [] // useffecte bax evvel,orda sirf postun taglariyla eyni olan postlari axtarir ve burdada esas postdan basqa(ana ekrandaki) qalan hamisini recoomended postlara at
-
+  const recommendedPosts = post ? posts?.filter((item) => {
+    if (item._id !== post._id) {
+      return item.creator === post.creator
+    }
+  }) : []
+  
   return (
     <Paper style={{ padding: '20px', borderRadius: '15px' }} elevation={6}>
       {post
