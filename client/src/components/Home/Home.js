@@ -31,7 +31,8 @@ export default function Home() {
 
     const searchPost = () => {
         if (search.trim() || tags.length) {
-            dispatch(getPostsBySearch({ search, tags: tags }));
+            dispatch(getPostsBySearch({ search, tags: tags }));//tags = ["js","mern"]
+            // tags array olmagina baxmayaraq biz asagida o string olaraq oturulur bilmirem niye
             navigate(`/posts/search?searchQuery=${search || 'none'}&tags=${tags}`);
         } else {
             navigate('/');

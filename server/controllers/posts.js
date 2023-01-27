@@ -46,7 +46,7 @@ export const getPostsBySearch = async (req, res) => {
         );// hansi yazilan tagi include edirse butun o postlari qaytaracaq(amcaq birinci tapdigini yox)
 
 
-        res.json(posts); // data-nin burda yazilmasinin ne menasi var sonradan iki defe destructure edecik ic ice gic gic
+        res.json(posts); 
     } catch (error) {
         res.status(404).json({ message: error.message });
     }

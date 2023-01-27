@@ -6,7 +6,6 @@ import './index.css';
 import { BrowserRouter } from 'react-router-dom';
 import { store } from './redux/store';
 
-
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>

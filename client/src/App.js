@@ -14,14 +14,11 @@ import { getMe, signIn } from './redux/usersSlice';
 
 const App = () => {
   const dispatch = useDispatch()
-  const postData = useSelector((state) => state.posts);
   const { user } = useSelector((state) => state.users);
-  const navigate = useNavigate()
 
 
   useEffect(() => {
     dispatch(getMe())
-
   }, [])
 
 

@@ -28,6 +28,7 @@ const CommentSection = ({ post }) => { // state.post-dan gelir
         setComment('');
         commentsRef.current.scrollIntoView({ behavior: 'smooth' });
         // komment coxlugu olanda scroll yaranir ve yeni comment elave edilende scroll avtomatik en sonuncu komente scroll elesin deye bunu yaziriq
+        // birde var commentsRef.current.focus() musahibedeki sual
     };
 
     return (

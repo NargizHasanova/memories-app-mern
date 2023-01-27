@@ -93,7 +93,6 @@ const Auth = () => {
               width="100%"
               type="icon"
             />
-
           </GoogleOAuthProvider>
           <Grid container justifyContent="flex-end">
             <Grid item>
